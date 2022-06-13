@@ -1,0 +1,142 @@
+<!-- main menu-->
+<div
+	data-scroll-to-active="true"
+	class="main-menu menu-fixed menu-dark menu-accordion menu-shadow"
+>
+	<!-- main menu header-->
+	<div class="main-menu-header">
+		<input
+			type="text"
+			placeholder="Search"
+			class="menu-search form-control round"
+		/>
+	</div>
+	<!-- / main menu header-->
+	<!-- main menu content-->
+	<div class="main-menu-content">
+		<ul
+			id="main-menu-navigation"
+			data-menu="menu-navigation"
+			class="navigation navigation-main"
+		>
+			<li class="nav-item">
+				<a href="/dashboard">
+					<i class="icon-grid2"></i>
+					<span data-i18n="nav.dash.main" class="menu-title">Dashboard</span>
+				</a>
+			</li>
+
+			<!-- #################  Student Start ################# -->
+			<!-- #################  Student End ################# -->
+			
+			<!-- #################  Lecturer Start ################# -->
+			<!-- #################  Lecturer End ################# -->
+			
+			<!-- #################  Admin Start ################# -->
+			{% if session.usertype == 'admin' %}
+				<li class="nav-item">
+					<a href="{{ url_for('views.manage_courses') }}">
+						<i class="icon-book"></i>
+						<span data-i18n="nav.page_layouts.main" class="menu-title"
+							>Courses</span
+						>
+					</a>
+				</li>
+
+				<li class="nav-item">
+					<a href="{{ url_for('views.manage_lecturers') }}">
+						<i class="icon-user-tie"></i>
+						<span data-i18n="nav.project.main" class="menu-title"> Lecturers</span>
+					</a>
+				</li>
+
+				<li class="nav-item">
+					<a href="">
+						<i class="icon-pie-chart"></i>
+						<span data-i18n="nav.cards.main" class="menu-title">Evaluation Result</span>
+					</a>
+				</li>
+
+				<li class="nav-item">
+					<a href="{{ url_for('views.manage_students') }}">
+						<i class="icon-users"></i>
+						<span data-i18n="nav.advance_cards.main" class="menu-title"
+							>Students</span
+						>
+					</a>
+				</li>
+
+				<li class="nav-item">
+					<a href="#">
+						<i class="icon-newspaper"></i>
+						<span data-i18n="nav.content.main" class="menu-title">News</span>
+					</a>
+				</li>
+
+				<li class="nav-item">
+					<a href="#">
+						<i class="icon-speech-bubble"></i>
+						<span data-i18n="nav.components.main" class="menu-title"
+							>FAQ Forum</span
+						>
+					</a>
+				</li>
+
+				<li class="nav-item">
+					<a href="#">
+						<i class="icon-cloud-download3"></i>
+						<span data-i18n="nav.icons.main" class="menu-title">Downloads</span>
+					</a>
+				</li>
+
+				<li class="nav-item">
+					<a href="{{ url_for('views.settings') }}">
+						<i class="icon-cog2"></i>
+						<span
+							data-i18n="nav.form_layouts.form_layout_basic"
+							class="menu-title"
+							>Settings</span
+						>
+					</a>
+				</li>
+			{% endif %}
+			<!-- #################  Admin End ################# -->
+			<li class="navigation-header">
+				<span data-i18n="nav.category.support">Support</span>
+				<i
+					data-toggle="tooltip"
+					data-placement="right"
+					data-original-title="Support"
+					class="icon-ellipsis icon-ellipsis"
+				></i>
+			</li>
+
+			<li class="nav-item">
+				<a
+					href="https://github.com/pixinvent/robust-free-bootstrap-admin-template/issues"
+				>
+					<i class="icon-support"></i>
+					<span data-i18n="nav.support_raise_support.main" class="menu-title"
+						>Raise Support</span
+					>
+				</a>
+			</li>
+
+			<li class="nav-item">
+				<a
+					href="https://pixinvent.com/free-bootstrap-template/robust-lite/documentation"
+				>
+					<i class="icon-document-text"></i>
+					<span data-i18n="nav.support_documentation.main" class="menu-title"
+						>Documentation</span
+					>
+				</a>
+			</li>
+		</ul>
+	</div>
+	<!-- /main menu content-->
+	<!-- main menu footer-->
+	<!-- include includes/menu-footer-->
+	<!-- main menu footer-->
+</div>
+<!-- / main menu-->

@@ -1,0 +1,75 @@
+{% extends 'layout.html' %} {% block title %}Dashboard{% endblock %} {% block
+body%} {% include 'includes/_navbar.html' %} {% include
+'includes/_sidebar.html'%}
+{% include 'includes/_messages.html' %}
+
+<div class="app-content content container-fluid">
+	<div class="content-wrapper">
+		<div class="content-header row">
+
+			<div class=" col-md-6 col-xs-12 ">
+				<h2 class="content-header-title">COURSE: {{ id }}</h2>
+				<span>{{ question_list|length }} Question(s)</span>
+			</div>
+
+			<div class=" col-md-6 col-xs-12">
+        <span class="float-xs-right">
+          Lecturer: <b>{{ course_lecturer['firstname']|title }} {{ course_lecturer['lastname']|title  }}</b>
+        </span><br> 
+        <span class="float-xs-right">Position: <b>{{ course_lecturer['position']|title }} </b></span>
+			</div>
+      
+		</div>
+
+    <hr>
+
+		<div class="content-body">
+
+			<form action="{{ url_for('auth.evaluation_sum') }}" method="post">
+        <input type="hidden" name="course" value="{{ course['course'] }}" />
+          {% for question in question_list %}  
+          <div class="container mb-2 card py-1 card-body">
+
+            <span class="font-medium-2 text-bold-600">
+              {{ loop.index }}. &nbsp; {{ question['question']|title }} <br>
+            </span>
+
+            <div class=" ml-3 container row mt-1">
+
+            {% for option in question['options'] %}              
+              <div class="check col-sm-6 mb-1">
+                <input class="form-check-input " type="radio" name="{{ question['question'] }}" value="{{ question['options'][option] }}" id="{{ question['question'] }}{{ loop.index }}">
+                <label class="form-check-label" for="{{ question['question'] }}{{ loop.index }}"
+                        style="padding-left: 5px">
+                  {{ option|title }}
+                </label>
+              </div>
+            {% endfor %}
+
+            </div>
+          </div>
+
+          {% endfor %}
+          <div class="container" align="center">
+            <button class="btn btn-primary btn-large half-width" type="submit" value="">
+              Submit
+            </button>
+          </div>
+      </form>
+
+		</div>
+	</div>
+</div>
+
+<!-- <script>
+        window.setInterval(function() {
+        fetch('/api')
+        .then(function(response){
+            return response.json();
+        })
+        .then(function(myJson){
+            document.getElementById('display').innerHTML = myJson['data'];
+        })
+    }, 2000)
+    </script> -->
+{% endblock %}

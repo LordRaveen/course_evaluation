@@ -1,0 +1,397 @@
+{% extends 'layout.html' %} {% block title %} Manage Courses {% endblock %}} {%
+block body %} {% include 'includes/_navbar.html' %} {% include
+'includes/_sidebar.html' %} ` {% include 'includes/_messages.html' %}
+
+<div class="app-content content container-fluid">
+	<div class="content-wrapper">
+		<div class="content-header row">
+			<div class="content-header-left col-md-6 col-xs-12 mb-1">
+				<h2 class="content-header-title">Manage Courses</h2>
+			</div>
+		</div>
+		<div class="content-body">
+			<!-- Basic form layout section start -->
+			<section id="basic-form-layouts">
+				<div class="row">
+					<div class="col-md-8">
+						<div class="card">
+							<div class="card-header">
+								<h4 class="card-title" id="basic-layout-colored-form-control">
+									All Courses
+								</h4>
+								<a class="heading-elements-toggle"
+									><i class="icon-ellipsis font-medium-3"></i
+								></a>
+								<div class="heading-elements">
+									<ul class="list-inline mb-0">
+										<li>
+											<a data-action="collapse"><i class="icon-minus4"></i></a>
+										</li>
+										<li>
+											<a data-action="expand"><i class="icon-expand2"></i></a>
+										</li>
+									</ul>
+								</div>
+							</div>
+							<div class="card-body collapse in">
+								<div class="card-block">
+									<ul class="nav nav-pills">
+										{% for level in levels %} {% if level['level'] == '100' %}
+										{% set active = 'active' %} {% endif %}
+										<li class="nav-item">
+											<a
+												class="nav-link {{active}}"
+												id="base-pill{{level['level']}}"
+												data-toggle="pill"
+												href="#pill{{level['level']}}"
+												aria-expanded="true"
+												>{{level['class']}}
+											</a>
+										</li>
+										{% endfor %}
+									</ul>
+
+									<div class="tab-content px-1 pt-1">
+										{% for level in levels %} {% if level['level'] == '100' %}
+										<div
+											role="tabpanel"
+											class="tab-pane active"
+											id="pill{{level['level']}}"
+											aria-expanded="true"
+											aria-labelledby="base-pill{{level['level']}}"
+										>
+											{% else %}
+											<div
+												class="tab-pane"
+												id="pill{{level['level']}}"
+												aria-expanded="true"
+												aria-labelledby="base-pill1"
+											>
+												{% endif %}
+												<!-- ##############START###################START#################################### -->
+												<span style="display: none">
+													{% set coursx = [] %} {% for course in courses %} {%
+													if course['level'] == level['level'] and
+													course['semester'] == 'first' %} {{
+													coursx.append(course) }} {% endif %} {% endfor %}
+												</span>
+
+												<h3 class="my-1">First semester [{{coursx|length}}]</h3>
+												{% if coursx|length > 0 %}
+												<div class="table-responsive .table-bordered mb-3">
+													<table class="table table-hover mb-0">
+														<thead>
+															<tr>
+																<th>S/N</th>
+																<th>Course</th>
+																<th>Lecturer</th>
+																<th>Action</th>
+															</tr>
+														</thead>
+														<tbody>
+															{% for course in coursx %}
+
+															<tr>
+																<td class="text-truncate">{{loop.index}}</td>
+
+																<td class="text-truncate">
+																	<span>
+																		{{course['code'].upper()}}
+																		{{course['course'].title()}}
+																	</span>
+																</td>
+
+																<td>
+																	{% set lecturer =  find_lecturer(ObjectId(course['lecturer']))%}
+																																		
+																		{% if lecturer != 'None' %}
+																			<span>{{ lecturer['firstname']|title }} {{ lecturer['lastname']|title }}</span>
+																		{% else %} 
+																			<a class="btn btn-danger btn-sm text-white " data-toggle="modal" data-target="#editModal{{course['level']}}{{course['code']}}"> 
+																				Assign Lecturer 
+																			</a>
+																		{% endif %} 
+
+																</td>
+
+																<td class="text-truncate">
+																	<button
+																		class="btn btn-info btn-sm"
+																		style="padding: 2px; font-size: 14px"
+																		data-toggle="modal"
+																		data-target="#editModal{{course['level']}}{{course['code']}}"
+																	>
+																		<i class="icon-edit"></i>
+																	</button>
+																	<form
+																		action="/delete"
+																		method="post"
+																		class="form-inline d-inline"
+																	>
+																		<input
+																			type="hidden"
+																			value="{{course['_id']}}"
+																			name="_id"
+																		/>
+																		<input
+																			type="hidden"
+																			value="views.manage_courses"
+																			name="page"
+																		/>
+																		<input
+																			type="hidden"
+																			value="courses"
+																			name="collection"
+																		/>
+
+																		<button
+																			type="submit"
+																			class="btn btn-danger"
+																			style="padding: 2px"
+																		>
+																			<i class="icon-bin2"></i>
+																		</button>
+																	</form>
+																</td>
+															</tr>
+															{% include 'includes/edit_courses_modal.html' %}
+															{% endfor %}
+														</tbody>
+													</table>
+												</div>
+												{% else %}
+												<p align="center" class="mt-1 jumbotron">
+													No course has been added for first semester!
+												</p>
+												{% endif %}
+												<!-- if courses|length > 0 -->
+
+												<span style="display: none">
+													{% set cours = [] %} {% for course in courses %} {% if
+													course['level'] == level['level'] and
+													course['semester'] == 'second' %} {{
+													cours.append(course) }} {% endif %} {% endfor %}
+												</span>
+												<h3>Second semester [{{cours|length}}]</h3>
+												{% if cours|length > 0 %}
+												<div class="table-responsive .table-bordered">
+													<table class="table table-hover mb-0">
+														<thead>
+															<tr>
+																<th>S/N</th>
+																<th>Course</th>
+																<th>Lecturer</th>
+																<th>Action</th>
+															</tr>
+														</thead>
+														<tbody>
+															{% for course in cours %}
+															<tr>
+																<td class="text-truncate">{{loop.index}}</td>
+
+																<td class="text-truncate">
+																	<span>
+																		{{course['code'].upper()}}
+																		{{course['course'].title()}}
+																	</span>
+																</td>
+
+																<td>
+																	{% set lecturer =  find_lecturer(ObjectId(course['lecturer']))%}
+																																		
+																		{% if lecturer != 'None' %}
+																			<span>{{ lecturer['firstname']|title }} {{ lecturer['lastname']|title }}</span>
+																		{% else %} 
+																			<a class="btn btn-danger btn-sm text-white " data-toggle="modal" data-target="#editModal{{course['level']}}{{course['code']}}"> 
+																				Assign Lecturer 
+																			</a>
+																		{% endif %} 
+																</td>
+
+																<td class="text-truncate">
+																	<button
+																		class="btn btn-info btn-sm"
+																		style="padding: 2px; font-size: 14px"
+																		data-toggle="modal"
+																		data-target="#editModal{{course['level']}}{{course['code']}}"
+																	>	<i class="icon-edit"></i>
+																	</button>
+																	<form
+																		action="/delete"
+																		method="post"
+																		class="form-inline d-inline"
+																	>
+																		<input
+																			type="hidden"
+																			value="{{course['_id']}}"
+																			name="_id"
+																		/>
+																		<input
+																			type="hidden"
+																			value="views.manage_courses"
+																			name="page"
+																		/>
+																		<input
+																			type="hidden"
+																			value="courses"
+																			name="collection"
+																		/>
+
+																		<button
+																			type="submit"
+																			class="btn btn-danger"
+																			style="padding: 2px"
+																		>
+																			<i class="icon-bin2"></i>
+																		</button>
+																	</form>
+																</td>
+															</tr>
+															{% include 'includes/edit_courses_modal.html' %}
+															{% endfor %}
+														</tbody>
+													</table>
+												</div>
+
+												{% else %}
+												<p align="center" class="mt-1 jumbotron">
+													No Course has been added for second semester!
+												</p>
+												{% endif %}
+												<!-- if courses|length > 0 -->
+
+												<!-- ################END############################END######################### -->
+											</div>
+											{% endfor %}
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="col-md-4">
+							<div class="card">
+								<div class="card-header">
+									<h4 class="card-title" id="basic-layout-form">
+										<i class="icon-book2"></i> Add Course
+									</h4>
+									<a class="heading-elements-toggle"
+										><i class="icon-ellipsis font-medium-3"></i
+									></a>
+									<div class="heading-elements">
+										<ul class="list-inline mb-0">
+											<li>
+												<a data-action="collapse"
+													><i class="icon-minus4"></i
+												></a>
+											</li>
+											<li>
+												<a data-action="expand"><i class="icon-expand2"></i></a>
+											</li>
+										</ul>
+									</div>
+								</div>
+								<div class="card-body collapse in">
+									<div class="card-block">
+										<form class="form" method="post" action="/add_course">
+											<div class="form-body">
+												<div class="form-group">
+													<input
+														type="text"
+														required
+														class="form-control"
+														value="{{request.form.course}}"
+														placeholder="Course Name"
+														name="course"
+													/>
+												</div>
+
+												<div class="form-group">
+													<input
+														type="text"
+														required
+														class="form-control"
+														value="{{request.form.code}}"
+														placeholder="Course Code"
+														name="code"
+													/>
+												</div>
+
+												<div class="form-group">
+													<input
+														type="text"
+														required
+														class="form-control"
+														value="{{request.form.credit_unit}}"
+														placeholder="Credit Unit"
+														name="credit_unit"
+													/>
+												</div>
+
+												<div class="form-group">
+													<select
+														id="projectinput6"
+														required
+														name="level"
+														class="form-control"
+													>
+														<option selected disabled="">Level</option>
+														{% for i in levels %} {% set l = i['level'].lower()
+														%}
+														<option value="{{l}}">
+															{{i['level'].title()}}  {{i['class']}}
+														</option>
+														{% endfor %}
+													</select>
+												</div>
+
+												<div class="form-group">
+													<select required name="semester" class="form-control">
+														<option selected disabled="">Semester</option>
+														{% for i in semesters %} {% set s =
+														i['semester'].lower() %}
+														<option value="{{s}}">
+															{{i['semester'].title()}}
+														</option>
+														{% endfor %}
+													</select>
+												</div>
+
+												<div class="form-group">
+													<select required name="lecturer" class="form-control">
+														<option selected disabled="">Lecturer</option>
+														{% for i in lecturers %} {% set name =
+														i['firstname'] + " " + i['lastname'] %} {% set
+														lecturer_id = i['_id'] %}
+														<option value="{{lecturer_id}}">
+															{{i['firstname'].title()}}
+															{{i['lastname'].title()}} ----
+															{{i['position'].title()}}
+														</option>
+														{% endfor %}
+													</select>
+												</div>
+
+												<div class="form-group">
+													<button
+														type="submit"
+														class="btn btn-primary btn-block"
+													>
+														<i class="icon-check2"></i> Save
+													</button>
+												</div>
+											</div>
+										</form>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+			<!-- // Basic form layout section end -->
+		</div>
+	</div>
+</div>
+
+{% endblock %}

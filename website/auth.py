@@ -206,7 +206,8 @@ def add_student():
                         'level': level,
                         'pic': pic,
                         'about': '',
-                        'date_created': date_now}
+                        'date_created': date_now, 
+                        'courses_evaluated':[]}
 
                     students.insert_one(student)
                                                     
@@ -226,6 +227,7 @@ def add_student():
 @auth.route('/update_student', methods=['GET', 'POST'])
 def update_student():
     if request.method == 'POST':
+
         _id = request.form.get('_id')
         firstname = request.form.get('firstname').title()
         lastname = request.form.get('lastname').title()
@@ -238,12 +240,8 @@ def update_student():
 
         candidate = students.find_one({"_id": ObjectId(_id)})
 
-        print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
-
         try:
             if password == cpassword:
-                print("############ 2")
-                print(candidate)
                 students.update_one(
                     {"_id": ObjectId(_id)},[
                     {"$set": {"regnumber": regnumber}},
@@ -255,11 +253,12 @@ def update_student():
                     {"$set": {"password": password}},
                     {"$set": {"date_last_updated": date_now}}]
                 )
-                print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
                 flash('Student Record Updated!', 'success')
                 return redirect(url_for('views.manage_students'))
+
             flash('Passwords have to be the same', 'danger')
             return redirect(url_for('views.manage_students'))
+
         except:
             flash('An error occurred! Please try again later.', 'danger')
             return redirect(url_for('views.manage_students'))
@@ -283,7 +282,7 @@ def update_profile():
         audience = db[f'{session["usertype"]}s']
         titles = "regnumber" if session["usertype"] == "student" else "username"
         candidate = audience.find_one({titles: session['username']})
-        print(candidate)
+
         try: 
             audience.update_one(
             {titles:session['username']},[
@@ -371,8 +370,8 @@ def add_setting():
 @is_admin
 def add_lecturer():
     if request.method == 'POST': 
-        firstname = request.form.get('firstname')
-        lastname = request.form.get('lastname')
+        firstname = request.form.get('firstname').title()
+        lastname = request.form.get('lastname').title()
         username = request.form.get('username')
         phone = request.form.get('phone')
         email = request.form.get('email')
@@ -444,8 +443,9 @@ def update_lecturer():
 @is_admin
 def add_course():
     if request.method == 'POST':
+
         course = request.form.get('course')
-        code = request.form.get('code')
+        code = request.form.get('code').upper()
         credit_unit = request.form.get('credit_unit')
         level = request.form.get('level')
         semester = request.form.get('semester')
@@ -629,9 +629,7 @@ def evaluation_sum():
         # add up the scores
         total_score = 0
         percentage = 0
-        scores = lambda x: courses.find_one({"course": course})['scores'][x]        
-
-        print('################', scores('total'))
+        scores = lambda x: courses.find_one({"course": course})['scores'][x]    
 
         for i in feedback:
             total_score += int(i[1])
@@ -649,11 +647,14 @@ def evaluation_sum():
         no_of_eval = 1 if scores('no_of_evaluation') <= 0 else scores('no_of_evaluation')
         sum_scores = sum([scores('25'), scores('50'), scores('75'), scores('100')] )
         db_total = courses.find_one({'course': course})['scores']['total']
-
-        new_percentage = ( db_total / (sum_scores * 100) ) * 100
-        print(f"{new_percentage} : sum {sum_scores}: total: {db_total}")
+        
+        new_percentage_raw = ( db_total / (sum_scores * 100) ) * 100
+        new_percentage = round(new_percentage_raw)
 
         courses.update_one({"course": course}, {'$set': {f"scores.percent": new_percentage} })
+        students.update_one({"regnumber": session['regnumber']},
+                             {'$push': {'courses_evaluated': course}})
+
         flash('Evaluation Successful!', 'success')
     return redirect(url_for('views.dashboard'))
 

@@ -26,14 +26,23 @@ def dashboard():
 
     if session['usertype'] == 'student':
         account = students.find_one({"regnumber": session['regnumber']})
-        courses_offered = courses.find({"level": account['level']})
+
+        query = [{"level": account['level']}, 
+                 {"open_for_evaluation": 'true'}]
+
+        courses_query = [course for course in courses.find({"$and": query})]
+        courses_offered = [course for course in courses_query if course['course'] not in account['courses_evaluated']]
+
+        courses_evaluated = [course for course in courses_query if course['course'] in account['courses_evaluated']]
+
         
-        return render_template('dashboard.html', account=account, courses_offered=courses_offered)
+        
+        return render_template('dashboard.html', account=account, courses_offered=courses_offered, courses_evaluated=courses_evaluated)
     
     elif session['usertype'] == 'lecturer':
         account = lecturers.find_one({"username": session['username']})
         courses_taught = [course_taught for course_taught in courses.find() if account['_id'] == ObjectId(course_taught['lecturer'])]
-        print(account, courses_taught)
+        
         return render_template('lecturer/lecturer_dashboard.html', courses_taught=courses_taught, questions=questions)
 
     elif session['usertype'] == 'admin':
@@ -96,6 +105,7 @@ def manage_courses():
 
     print(lecturer_list)
     return render_template('admin/manage_courses.html',
+                            find_lecturer=find_lecturer,
                             lecturers=lecturer_list,
                             levels=level_list,
                             semesters=semester_list,

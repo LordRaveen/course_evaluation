@@ -1,0 +1,28 @@
+<script src="../static/js/jquery-2.1.4.min.js" type="text/javascript"></script>
+<script src="../static/js/toastr.js" type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" href="../static/css/toastr.css" />
+
+{% with messages = get_flashed_messages(with_categories=true) %} {% if messages
+%} {% for category, message in messages %} {% if category == 'success' %}
+<script>
+	$(function () {
+		// Toastr options
+		toastr.options = {
+			positionClass: "toast-top-right",
+			timeOut: "6000",
+		};
+		toastr.success("{{message}}", "Success");
+	});
+</script>
+{% else %}
+<script>
+	$(function () {
+		// Toastr options
+		toastr.options = {
+			positionClass: "toast-top-right",
+			timeOut: "6000",
+		};
+		toastr.warning("{{message}}", "Warning");
+	});
+</script>
+{% endif %} {% endfor %} {% endif %} {% endwith %}

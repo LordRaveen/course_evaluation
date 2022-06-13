@@ -1,0 +1,112 @@
+{% extends 'layout.html' %} {% block title %}Dashboard{% endblock %} {% block
+body%} {% include 'includes/_navbar.html' %} {% include
+'includes/_sidebar.html'%}
+
+<div class="app-content content container-flid">
+	<div class="content-wrapper">
+		<div class="content-header row">
+			<div class="content-header-left col-xs-12 mb-1">
+				<h2 class="content-header-title">Welcome {{session['username']}}</h2>
+				<span>Select a course to evaluate.</span>
+				<hr />
+			</div>
+			<div
+				class="content-header-right breadcrumbs-right breadcrumbs-top col-md-6 col-xs-12"
+			>
+				{% include 'includes/_messages.html' %}
+			</div>
+		</div>
+
+		<div class="content-body">
+			<div class="row container">
+				{% set base_color = ['primary', 'success', 'info', 'pink', 'purple',
+				'indigo', 'cyan', 'teal', 'green', 'yellow', 'amber', 'brown', 'grey']
+				%} {% if courses_offered|count > 0 %} {% for course in courses_offered
+				%}
+
+				<div class="col-xl-4 col-lg-6 col-sm-6 col-xs-12">
+					<a href="{{ url_for('views.evaluate', id=course['course'] )}}">
+						<div class="card">
+							<div class="card-body">
+								<div class="card-block">
+									<div class="media">
+										<div class="media-left media-middle">
+											<i
+												class="icon-stats-bars2 {{base_color[loop.index - 1]}} font-large-2 float-xs-left"
+											></i>
+										</div>
+										<div class="media-body text-xs-right">
+											<h3 class="{{base_color[loop.index - 1]}} darken-2">
+												{{course['course']}}
+											</h3>
+											<span class="grey darken-4">
+												
+
+											</span>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</a>
+				</div>
+
+				{% endfor %} {% else %}
+
+				<div class="jumbotron text-sm-center container">
+					There is no course for you to evaluate. Please check back later.
+				</div>
+
+				{% endif %}
+			</div>
+
+			<div>
+				<h4>Courses evaluated</h4>
+				<hr />
+			</div>
+
+			<div class="row container">
+				{% if courses_evaluated|length > 0 %} {% for course in courses_evaluated
+				%}
+				<div class="col-xl-4 col-lg-6 col-sm-6 col-xs-12">
+					<div class="card">
+						<div class="card-body">
+							<div class="card-block">
+								<div class="media">
+									<div class="media-left media-middle">
+										<i class="icon-check grey font-large-2 float-xs-left"></i>
+									</div>
+									<div class="media-body text-xs-right">
+										<h3 class="grey darken-2">{{course['course']}}</h3>
+										<span class="grey"
+											>Evaluated
+											[{{course['scores']['no_of_evaluation']}}]</span
+										>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				{% endfor %} {% else %}
+				<div class="jumbotron text-sm-center container">
+					You have not evaluated any courses!
+				</div>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- <script>
+        window.setInterval(function() {
+        fetch('/api')
+        .then(function(response){
+            return response.json();
+        })
+        .then(function(myJson){
+            document.getElementById('display').innerHTML = myJson['data'];
+        })
+    }, 2000)
+    </script> -->
+{% endblock %}

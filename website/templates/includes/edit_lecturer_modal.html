@@ -1,0 +1,142 @@
+<!-- Modal -->
+<div class="modal fade text-xs-left" id="editModal{{lecturer['phone']}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <h4 class="modal-title" id="myModalLabel2"> Update Lecturer</hh4>
+    </div>
+    <div class="modal-body">
+      
+      <form class="form" method="post" action="{{ url_for('auth.update_lecturer')}}">
+
+        <input type="hidden" name="_id" value="{{lecturer['_id']}}">
+
+        <div class="form-body">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <input
+                  type="text"
+                  required
+                  class="form-control"
+                  value="{{lecturer['firstname']}}"
+                  placeholder="First Name"
+                  name="firstname"
+                />
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <input
+                  type="text"
+                  required
+                  class="form-control"
+                  value="{{lecturer['lastname']}}"
+                  placeholder="Last Name"
+                  name="lastname"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <input
+                  type="text"
+                  required
+                  class="form-control"
+                  value="{{lecturer['username']}}"
+                  placeholder="Username"
+                  name="username"
+                />
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <input
+                  type="phone"
+                  required
+                  class="form-control"
+                  value="{{lecturer['phone']}}"
+                  placeholder="Phone Number"
+                  name="phone"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <input
+                  type="email"
+                  required
+                  class="form-control"
+                  value="{{lecturer['email']}}"
+                  placeholder="Email"
+                  name="email"
+                />
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="form-group">
+                <select
+                  id="projectinput6"
+                  required
+                  name="position"
+                  class="form-control"
+                >
+                  <option  disabled="">Position</option>
+                  {% for i in positions %} 
+
+                  {% set p = i['position'].lower() %}
+                    {% if lecturer['position'].title() == i['position'].title() %}
+                      <option selected="selected" value="{{p}}"> {{i['position'].title()}} </option>
+                    {% else %}
+                      <option value="{{p}}"> {{i['position'].title()}}</option>
+                    {% endif %}
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <input
+                type="text"
+                required
+                class="form-control"
+                value="{{lecturer['password']}}"
+                placeholder="Password"
+                name="password"
+              />
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="form-group">
+              <button
+                type="submit"
+                class="btn btn-primary btn-block"
+              >
+                <i class="icon-check2"></i> Save
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn grey btn-outline-secondary" data-dismiss="modal">Close</button>
+    </div>
+  </div>
+  </div>
+</div>

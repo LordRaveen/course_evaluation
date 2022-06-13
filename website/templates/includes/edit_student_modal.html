@@ -1,0 +1,197 @@
+<!-- Modal -->
+<div class="modal fade text-xs-left" id="editModal{{student['regnumber']}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <h4 class="modal-title" id="myModalLabel2"> Enter details to add student</hh4>
+    </div>
+    <div class="modal-body">
+      
+      <form
+									class="form-horizontal form-simple"
+									method="post"
+									action="{{ url_for('auth.update_student')}}"
+								>
+									<div style="margin-top: 0px">
+									</div>
+
+									<input type="hidden" name="_id" value="{{ student['_id'] }}" />
+
+									<div class="row">
+										<!-- firstname -->
+										<fieldset
+											class="form-group position-relative has-icon-left mb-1 col-md-4"
+										>
+											<input
+												type="text"
+												class="form-control input-md"
+												name="firstname"
+												autocomplete="off"
+												autofocus
+												placeholder="First Name"
+												value="{{student['firstname']}}"
+												required
+											/>
+											<div class="form-control-position">
+												<i class="icon-head"></i>
+											</div>
+										</fieldset>
+
+										<!-- lastname -->
+										<fieldset
+											class="form-group position-relative has-icon-left mb-1 col-md-4"
+										>
+											<input
+												type="text"
+												class="form-control input-md"
+												name="lastname"
+												autocomplete="off"
+												placeholder="Last Name"
+												value="{{student['lastname']}}"
+												required
+											/>
+											<div class="form-control-position">
+												<i class="icon-user"></i>
+											</div>
+										</fieldset>
+
+										<!-- reg number -->
+										<fieldset
+											class="form-group position-relative has-icon-left mb-1 col-md-4"
+										>
+											<input
+												type="text"
+												class="form-control input-md"
+												name="regnumber"
+												autocomplete="off"
+												autofocus
+												placeholder="Registration Number"
+												value="{{student['regnumber']}}"
+												required
+											/>
+											<div class="form-control-position">
+												<i class="icon-ios-barcode"></i>
+											</div>
+										</fieldset>
+									</div>
+
+									<div class="row">
+										<!-- level -->
+										<fieldset
+											class="form-group position-relative has-icon-left mb-1 col-md-4"
+										>
+											<select
+												id="projectinput6"
+												required
+												name="level"
+												class="form-control"
+											>
+												<option disabled="">Class</option>
+												{% for i in levels %} 
+													{% if i['level'] == student['level'] %}
+														<option selected="selected" value="{{i['level']}}">{{ i['level'].title() }}  - {{ i['class'].title() }}</option>
+													{% else %}
+														<option value="{{i['level']}}">{{ i['level'].title() }}  - {{ i['class'].title() }}</option>
+													{% endif %}
+												{% endfor %}
+											</select>
+											<div class="form-control-position">
+												<i class="icon-building"></i>
+											</div>
+										</fieldset>
+
+										<!-- phone -->
+										<fieldset
+											class="form-group position-relative has-icon-left mb-1 col-md-4"
+										>
+											<input
+												type="text"
+												class="form-control input-md"
+												name="phone"
+												autocomplete="off"
+												placeholder="Phone Number"
+												value="{{student['phone']}}"
+												required
+											/>
+											<div class="form-control-position">
+												<i class="icon-phone"></i>
+											</div>
+										</fieldset>
+
+										<!-- email -->
+										<fieldset
+											class="form-group position-relative has-icon-left mb-1 col-md-4"
+										>
+											<input
+												type="email"
+												class="form-control input-md"
+												name="email"
+												autocomplete="off"
+												auto
+												placeholder="Email"
+												value="{{student['email']}}"
+												required
+											/>
+											<div class="form-control-position">
+												<i class="icon-email"></i>
+											</div>
+										</fieldset>
+									</div>
+
+									<div class="row">
+										<!-- password -->
+										<fieldset
+											class="form-group position-relative has-icon-left mb-1 col-md-4"
+										>
+											<input
+												type="text"
+												class="form-control input-md"
+												name="password"
+												autocomplete="off"
+												placeholder="Enter Password"
+												required
+												value="{{student['password']}}"
+											/>
+											<div class="form-control-position">
+												<i class="icon-key3"></i>
+											</div>
+										</fieldset>
+
+										<!-- confirm password -->
+										<fieldset
+											class="form-group position-relative has-icon-left mt-0 col-md-4"
+										>
+											<input
+												type="text"
+												class="form-control input-md"
+												name="cpassword"
+												autocomplete="off"
+												placeholder="Confirm Password"
+												required
+												value="{{student['password']}}"
+											/>
+											<div class="form-control-position">
+												<i class="icon-key3"></i>
+											</div>
+										</fieldset>
+									</div>
+
+									
+
+									<button
+										type="submit"
+										class="btn btn-primary btn-lg btn-block"
+									>
+										<i class="icon-save"></i> Update
+									</button>
+								</form>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn grey btn-outline-secondary" data-dismiss="modal">Close</button>
+    </div>
+  </div>
+  </div>
+</div>

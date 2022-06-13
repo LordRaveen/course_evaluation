@@ -1,0 +1,206 @@
+{% extends 'layout.html' %}
+{% block title %} Profile | {{session.username.title()}} {% endblock %}}
+
+{% block body %}
+
+	{% include 'includes/_navbar.html' %}
+			
+	{% include 'includes/_sidebar.html' %}
+
+	<div class="app-content content container-fluid">
+		<div class="content-wrapper">
+
+			<div class="row match-height">
+				<div class="col-xl-4 col-lg-12">
+					<div class="card card-inverse bg-cyan">
+       <div class="card-body">
+                            
+						</div>
+					</div>
+				</div>
+				<div class="col-xl-8 col-lg-12">
+					<div class="card">
+						<div class="card-header">                         
+
+										<!-- Pills Toggle Buttons -->
+										<ul class="nav nav-pills">
+														<li class="nav-item">
+																		<a class="nav-link " id="base-pill1" data-toggle="pill" href="#pill1" aria-expanded="true"><strong>Profile</strong></a>
+														</li>
+														<li class="nav-item">
+																		<a class="nav-link active" id="base-pill2" data-toggle="pill" href="#pill2" aria-expanded="false"><strong>Edit Profile</strong></a>
+														</li>
+														<li class="nav-item">
+																		<a class="nav-link " id="base-pill3" data-toggle="pill" href="#pill3" aria-expanded="false"><strong>Password</strong></a>
+														</li>
+										</ul>
+
+										<a class="heading-elements-toggle"><i class="icon-ellipsis font-medium-3"></i></a>
+										<div class="heading-elements">
+														<ul class="list-inline mb-0">
+																		<li><a data-action="expand"><i class="icon-expand2"></i></a></li>
+														</ul>
+										</div>
+						</div>
+							<div class="card-body collapse in">
+								<div class="card-block">
+										<div class="tab-content  pt-">
+
+											<div role="tabpanel" class="tab-pane " id="pill1" aria-expanded="true" aria-labelledby="base-pill1">
+															<p>Oat cake marzipan cake lollipop caramels wafer pie jelly beans. Icing halvah chocolate cake carrot cake. Jelly beans carrot cake marshmallow gingerbread chocolate cake. Gummies cupcake croissant.</p>
+											</div>
+
+											<div class="tab-pane active" id="pill2" aria-labelledby="base-pill2">
+															
+															<form class="form" method="post" action="/update_profile">
+																			<div class="form-body">
+																							<h4 class="form-section"><i class="icon-head"></i> Personal Info</h4>
+																							<div class="row">
+																											<div class="col-md-6 col-xl-4">
+																															<div class="form-group">
+																																			<div class="position-relative has-icon-left">
+																																							<input type="text" id="" class="form-control" placeholder="First Name" name="firstname" value="{{user_found.firstname.title()}}">
+																																							<div class="form-control-position">
+																																											<i class="icon-head"></i>
+																																							</div>
+																																			</div>
+																															</div>
+																											</div>
+																											<div class="col-md-6 col-xl-4">
+																															<div class="form-group">
+																																			<div class="position-relative has-icon-left">
+																																							<input type="text" id="projectinput2" class="form-control" placeholder="Last Name" name="lastname" value="{{user_found['lastname'].title()}}">
+																																							<div class="form-control-position">
+																																											<i class="icon-head"></i>
+																																							</div>
+																																			</div>
+																															</div>
+																											</div>
+																											<div class="col-md-6 col-xl-4">
+																															<div class="form-group">
+																																			<div class="position-relative has-icon-left">
+																																							<input type="text" id="projectinput2" class="form-control" readonly placeholder="Username" name="username" value="{{session.username.title()}}">
+																																							<div class="form-control-position">
+																																											<i class="icon-head"></i>
+																																							</div>
+																																			</div>
+																															</div>
+																											</div>
+																											
+																											<div class="col-md-6 col-xl-4">
+																															<div class="form-group">
+																																			
+																																			<div class="position-relative has-icon-left">
+																																							<select id="projectinput5" name="gender" class="form-control" selected="{{user_found.gender}}">
+																																											<option value="none" {% if user_found.gender == 'none' %}selected=""{% endif %} disabled="">Gender</option>
+																																											<option value="male" {% if user_found.gender == 'male' %}selected=""{% endif %} >Male</option>
+																																											<option value="female" {% if user_found.gender == 'female' %}selected=""{% endif %}>Female</option>
+																																							</select>
+																																							<div class="form-control-position">
+																																											<i class="icon-male"></i>
+																																							</div>
+																																			</div>
+																															</div>
+																											</div>
+																							</div>
+
+																							<h4 class="form-section"><i class="icon-email3"></i> Contact Info & Bio</h4>
+
+																						<div class="row mb-0">
+																											<div class="col-md-6 col-xl-4">
+																															<div class="form-group">
+																																			<div class="position-relative has-icon-left">
+																																							<input type="text" id="projectinput4" class="form-control" value="{{user_found.phone}}" placeholder="Phone" name="phone">
+																																							<div class="form-control-position">
+																																											<i class="icon-mobile-phone"></i>
+																																							</div>
+																																			</div>
+																															</div>
+																											</div>
+
+																											<div class="col-md-6 col-xl-4">
+																															<div class="form-group">
+																																			<div class="position-relative has-icon-left">
+																																							<input type="text" id="projectinput3" class="form-control" value="{{user_found.email}}" placeholder="E-mail" name="email">
+																																							<div class="form-control-position">
+																																											<i class="icon-email2"></i>
+																																							</div>
+																																			</div>
+																															</div>
+																											</div>
+																											<div class="col-xs-12 mb-0">
+																															<div class="form-group">
+																																			<div class="position-relative has-icon-left">
+																																							<textarea id="timesheetinput7" rows="5" class="form-control" name="about" placeholder="About me">{{user_found.about.capitalize()}}</textarea>
+																																							<div class="form-control-position">
+																																											<i class="icon-file2"></i>
+																																							</div>
+																																			</div>
+																															</div>
+																											</div>
+																			</div>
+																			</div>
+																			<div class=" col-sm-8">
+																			</div>
+																			<button type="submit" class="btn btn-primary col-xs-12 col-sm-4 ">
+																							<i class="icon-check2"></i> Save
+																			</button>
+															</form>
+											</div>
+
+											<div role="tabpanel" class="tab-pane " id="pill3" aria-expanded="true" aria-labelledby="base-pill3">
+															{% include 'includes/_messages.html' %}
+															<form class="form" method="post" action="/update_password">
+																			<div class="form-body">
+																							<h4 class="form-section"><i class="icon-unlock2"></i> Password</h4>
+																							<div class="row">
+																											<div class="col-md-6 col-xl-4">
+																															<div class="form-group">
+																																			<div class="position-relative has-icon-left">
+																																							<input type="password" id="" class="form-control" required placeholder="Old password" name="opassword">
+																																							<div class="form-control-position">
+																																											<i class="icon-unlock2"></i>
+																																							</div>
+																																			</div>
+																															</div>
+																											</div>
+																											<div class="col-md-6 col-xl-4">
+																															<div class="form-group">
+																																			<div class="position-relative has-icon-left">
+																																							<input type="password" id="projectinput2" class="form-control" required placeholder="New password" name="npassword">
+																																							<div class="form-control-position">
+																																											<i class="icon-lock4"></i>
+																																							</div>
+																																			</div>
+																															</div>
+																											</div>
+																											<div class="col-md-6 col-xl-4">
+																															<div class="form-group">
+																																			<div class="position-relative has-icon-left">
+																																							<input type="password" id="projectinput2" class="form-control" required placeholder="Confirm new password" name="cnpassword">
+																																							<div class="form-control-position">
+																																											<i class="icon-lock4"></i>
+																																							</div>
+																																			</div>
+																															</div>
+																											</div>
+																							</div>
+																			</div>
+																			<div class=" col-sm-8">
+																			</div>
+																			<button type="submit" class="btn btn-primary col-xs-12 col-sm-4 ">
+																							<i class="icon-check2"></i> Save
+																			</button>
+															</form>
+											</div>
+										</div>
+								</div>
+							</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+{% endblock %}
+ 

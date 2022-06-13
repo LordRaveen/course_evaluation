@@ -1,0 +1,27 @@
+{% extends 'layout.html' %}
+{% block body %}
+  <div class="container">
+
+    <h1>Welcome</h1>
+    <p id="data"></p>
+  
+    <a  id="btn" class="btn btn-primary">Magic</a>
+  </div> 
+
+
+
+<script src="../static/js/jquery-2.1.4.min.js" type="text/javascript"></script>
+<script>
+  $("#btn").click(function() {
+    
+    $.ajax({
+      url: "/tester",
+      type: "GET",
+      success: function(response){
+        $("#data").html(response);
+      },
+    });
+  });
+</script>
+
+{% endblock %}

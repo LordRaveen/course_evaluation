@@ -1,0 +1,251 @@
+{% extends "layout.html" %} {% block title %} Settings {% endblock %}} {% block
+body %} {% include 'includes/_navbar.html' %} {% include
+'includes/_sidebar.html' %}
+{% include 'includes/_messages.html' %}
+
+<div class="app-content content container-fluid">
+	<div class="content-wrapper">
+		<div class="content-header row">
+			<div class="content-header-left col-md-6 col-xs-12 mb-1">
+				<h2 class="content-header-title">Lecturers</h2>
+			</div>
+		</div>
+		<div class="content-body">
+			<!-- Basic form layout section start -->
+			<section id="basic-form-layouts">
+				<div class="row match-height">
+					<div class="col-md-5">
+						<div class="card">
+							<div class="card-header">
+								<h4 class="card-title" id="basic-layout-form">
+									<i class="icon-head"></i> Add Lecturer
+								</h4>
+								<a class="heading-elements-toggle"
+									><i class="icon-ellipsis font-medium-3"></i
+								></a>
+								<div class="heading-elements">
+									<ul class="list-inline mb-0">
+										<li>
+											<a data-action="collapse"><i class="icon-minus4"></i></a>
+										</li>
+										<li>
+											<a data-action="expand"><i class="icon-expand2"></i></a>
+										</li>
+									</ul>
+								</div>
+							</div>
+							<div class="card-body collapse in">
+								<div class="card-block">
+									<form class="form" method="post" action="/add_lecturer">
+										<div class="form-body">
+											<div class="row">
+												<div class="col-md-6">
+													<div class="form-group">
+														<input
+															type="text"
+															required
+															class="form-control"
+															value="{{request.form.firstname}}"
+															placeholder="First Name"
+															name="firstname"
+														/>
+													</div>
+												</div>
+												<div class="col-md-6">
+													<div class="form-group">
+														<input
+															type="text"
+															required
+															class="form-control"
+															value="{{request.form.lastname}}"
+															placeholder="Last Name"
+															name="lastname"
+														/>
+													</div>
+												</div>
+											</div>
+
+											<div class="row">
+												<div class="col-md-6">
+													<div class="form-group">
+														<input
+															type="text"
+															required
+															class="form-control"
+															value="{{request.form.username}}"
+															placeholder="Username"
+															name="username"
+														/>
+													</div>
+												</div>
+												<div class="col-md-6">
+													<div class="form-group">
+														<input
+															type="phone"
+															required
+															class="form-control"
+															value="{{request.form.phone}}"
+															placeholder="Phone Number"
+															name="phone"
+														/>
+													</div>
+												</div>
+											</div>
+
+											<div class="row">
+												<div class="col-md-6">
+													<div class="form-group">
+														<input
+															type="email"
+															required
+															class="form-control"
+															value="{{request.form.email}}"
+															placeholder="Email"
+															name="email"
+														/>
+													</div>
+												</div>
+
+												<div class="col-md-6">
+													<div class="form-group">
+														<select
+															id="projectinput6"
+															required
+															name="position"
+															class="form-control"
+														>
+															<option selected="" disabled="">Position</option>
+															{% for i in positions %} 
+
+															{% set p = i['position'].lower() %}
+															<option value="{{p}}">
+																{{i['position'].title()}}
+															</option>
+															{% endfor %}
+														</select>
+													</div>
+												</div>
+											</div>
+										</div>
+
+										<div class="row">
+											<div class="col-md-6">
+												<div class="form-group">
+													<input
+														type="text"
+														required
+														class="form-control"
+														value="{{request.form.password}}"
+														placeholder="Password"
+														name="password"
+													/>
+												</div>
+											</div>
+
+											<div class="col-md-6">
+												<div class="form-group">
+													<button
+														type="submit"
+														class="btn btn-primary btn-block"
+													>
+														<i class="icon-check2"></i> Save
+													</button>
+												</div>
+											</div>
+										</div>
+									</form>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-7">
+						<div class="card">
+							<div class="card-header">
+								<h4 class="card-title" id="basic-layout-colored-form-control">
+									All Lecturers
+								</h4>
+								<a class="heading-elements-toggle"
+									><i class="icon-ellipsis font-medium-3"></i
+								></a>
+								<div class="heading-elements">
+									<ul class="list-inline mb-0">
+										<li>
+											<a data-action="collapse"><i class="icon-minus4"></i></a>
+										</li>
+										<li>
+											<a data-action="expand"><i class="icon-expand2"></i></a>
+										</li>
+									</ul>
+								</div>
+							</div>
+							<div class="card-body collapse in">
+								<div class="card-block">
+									{% if lecturers|length > 0 %}
+									<div class="table-responsive">
+										<table class="table table-hover mb-0">
+											<thead>
+												<tr>
+													<th>S/N</th>
+													<th>Name</th>
+													<th>Position</th>
+													<th>Action</th>
+												</tr>
+											</thead>
+											<tbody>
+												{% for lecturer in lecturers %}
+												<tr>
+													<td class="text-truncate">{{loop.index}}</td>
+
+													<td class="text-truncate">
+														<span
+															>{{lecturer['firstname'].title()}}
+															{{lecturer['lastname'].title()}}</span
+														>
+													</td>
+													<td>
+														<span>{{ lecturer['position'].title() }}</span>
+													</td>
+
+													<td class="text-truncate">
+														<button class="btn btn-info btn-sm" style="padding: 2px; font-size: 14px;" data-toggle="modal" data-target="#editModal{{lecturer['phone']}}">
+															<i class="icon-edit"></i>
+														</button>
+														<form
+															action="/delete"
+															method="post"
+															class="form-inline d-inline"
+														>
+															<input type="hidden" value="{{lecturer['_id']}}" name="_id" />
+															<input type="hidden" value="views.manage_lecturers" name="page" />
+															<input
+																type="hidden"
+																value="lecturers"
+																name="collection"
+															/>
+															<button type="submit" class="btn btn-danger" style="padding: 2px;">
+																<i class="icon-bin2"></i>
+															</button>
+														</form>
+													</td>
+												</tr>
+												{% include 'includes/edit_lecturer_modal.html' %}
+												{% endfor %}
+											</tbody>
+										</table>
+									</div>
+									{% else %}
+									<p align="center" class="mt-1">No Lecturer has been added!</p>
+									{% endif %}
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+			<!-- // Basic form layout section end -->
+		</div>
+	</div>
+</div>
+
+{% endblock %}

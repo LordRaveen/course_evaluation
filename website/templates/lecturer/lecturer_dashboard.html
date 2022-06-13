@@ -1,0 +1,214 @@
+{% extends 'layout.html' %} {% block title %}Dashboard{% endblock %} {% block
+body%} {% include 'includes/_navbar.html' %} {% include
+'includes/_sidebar.html'%}
+{% include 'includes/_messages.html' %}
+
+<!-- Justified Pills start -->
+<div class="app-content content container-fluid">
+	<div class="content-wrapper">
+		<section id="justified-pills">
+			<div class="row">
+				<div class="col-xs-12 mt-1">
+					<h4>Questionaire</h4>
+					<hr />
+				</div>
+			</div>
+			<div class="row match-height">
+				<div class="col-xs-12">
+					<div class="card">
+						<div class="card-header">
+							<h4 class="card-title">Set / Edit Questionaires</h4>
+						</div>
+
+						<div class="card-body">
+							<div class="card-block">
+								<p>Set <code>Questionaires</code>{{ session['tab_code'] }} For Courses You Teach.</p>  
+								<ul class="nav nav-pills">
+
+									<!-- Pills generator -->
+									{% for course_taught  in courses_taught%}
+										{% if loop.index == 1  %}
+											{% set active = "active" %} 
+										{% endif %}
+
+											<li class="nav-item">
+												<a
+													class="nav-link {{active}}"
+													id="active-pill"
+													data-toggle="pill"
+													href="#{{course_taught['code']}}"
+													>{{course_taught['course']}} {{course_taught['class']}}</a>
+											</li>
+									{% endfor %}
+
+								</ul>
+
+
+								<div class="tab-content px-1 pt-1">
+
+									<!-- Tab Content Generator -->
+									{% for course_taught in courses_taught%}
+									{% if loop.index == 1 %}
+										<div
+											role="tabpanel "
+											class="tab-pane row active"
+											id="{{course_taught['code']}}"
+											aria-expanded="true"
+										>
+									{% else %}
+										<div
+											class="tab-pane row"
+											id="{{course_taught['code']}}"
+											aria-expanded="true"
+										>
+									{% endif %}
+
+										<div class="col-xl-4">
+											<form action="{{ url_for('auth.add_question') }}" class="form" method="post">
+												<input type="hidden" name="course" value="{{course_taught['course']}}">
+												<div class="mt-1">
+													<h4>Add questionaire for {{course_taught['course']}}</h4> {{session['tab-code']}}
+													<hr />
+												</div>
+
+												<div class="row">
+													<div class="col-lg-12">
+														<textarea class="form-control" placeholder="Type question here" name="question" id="" cols="30" rows="3"></textarea>
+													</div>
+
+													<div class="col-sm-6 col-lg-6 col-xl-12 mt-1">
+														<b>Option Type</b> <br>
+
+														<div class="form-group row mt-1" >
+															<label class="display-inline-block custom-control custom-radio ml-1" data-placement="top" data-toggle="popover" data-content="Very good<br>Good<br>Average<br>Poor" data-html="true" data-trigger="hover" data-original-title="">
+																<input checked type="radio" value="good" name="option_type" class="custom-control-input">
+																<span class="custom-control-indicator"></span>
+																<span class=" ml-0">Good</span>
+															</label>
+
+															<label class=" display-inline-block custom-control custom-radio ml-4" data-placement="top" data-toggle="popover" data-content="Strongly agree<br>Agree<br>Disagree<br>Strongly disagree" data-html="true" data-trigger="hover" data-original-title="">
+																<input type="radio" value="agree" name="option_type" class="custom-control-input" >
+																<span class="custom-control-indicator"></span>
+																<span class="custom-control-description ml-0">Agree</span>
+															</label>
+
+															<label class=" display-inline-block custom-control custom-radio ml-4" data-placement="top" data-toggle="popover" data-content="More likely<br>Likely<br>Unlikely<br>More unlikely" data-html="true" data-trigger="hover" data-original-title="">
+																<input type="radio" value="likely" name="option_type" class="custom-control-input">
+																<span class="custom-control-indicator"></span>
+																<span class="custom-control-description ml-0">Likely</span>
+															</label>
+														</div>
+													</div>
+
+													<div class="col-6 col-md-6 col-lg-6 col-xl-12 mt-2">
+														<button class="btn btn-primary btn-lg btn-block text-bold" type="submit"> 
+															<i class="icon-plus"></i>Add
+														</button>
+													</div>
+
+												</div>
+
+											</form>
+										</div>
+
+										<div class="col-xl-8">
+											<div class="mt-1 mb-2 row">
+												<h4 class="display-inline col-md-10">Questions for {{course_taught['course']}}</h4>
+												<div class="display-inline col-md-2">
+
+														{% if course_taught['open_for_evaluation'] == 'true' %}
+															{% set action, icon = 'deactivate', 'check' %}
+															{% set color, display = 'success', 'Activated'  %}
+														{% else %}
+															{% set action, icon = 'activate', 'minus-circle' %}
+															{% set color, display = 'warning', 'Deactivated'  %}
+														{% endif %}
+													<form method="post" action="{{url_for('auth.activate_evaluation', id=course_taught['_id'])}} " class="display-inline ">
+														<input type="hidden" name="method" value="{{ action }}">
+														<button class="btn btn-{{ color }} btn-sm" data-placement="top" type="submit"
+																		data-toggle="popover" data-content="{{ action.title() }}" 
+																		data-html="true" data-trigger="hover">
+															<i class="icon-{{ icon }} default"></i> {{display}}
+														</button>
+													</form>
+												</div>
+											</div>
+											{% if questions.find_one({"course": course_taught['course']}) == None %}
+												<div class="jumbotron" align="center">No Questions Set For This Course</div>
+											{% else %}
+											<div class="table-responsive .table-bordered mb-3">
+												<table class="table table-hover mb-0">
+													<thead>
+														<tr>
+															<th class="" style="width: 10px !important;">S/N</th>
+															<th class="">Question</th>
+															<th class="">Option Type</th>
+															<th class="">Action</th>
+														</tr>
+													</thead>
+
+													<tbody>
+														
+														{% for question in questions.find({"course": course_taught['course']}) %}
+														<tr>
+															<td>{{ loop.index }}</td>
+															<td>{{ question['question'] }}</td>
+															<td>{{ question['option_type']|title}} </td>
+															<td>
+
+																{% if question['activated'] == 'false' %}
+																<form action="{{url_for('auth.activate')}}" method="post"  class="d-inline">
+																	<input type="hidden" name="page" value="views.dashboard">
+																	<input type="hidden" name="question_id" value="{{question['_id']}}">
+																	<button class="btn btn-outline-orange" style="padding: 2px; font-size: 18px;" data-placement="top" data-toggle="popover" data-content="Click to<br>Activate" data-html="true" data-trigger="hover" > <i class="icon-toggle-off" ></i></button>
+																</form>
+
+																{% else %}
+																<form action="{{url_for('auth.deactivate')}}" method="post" class="d-inline">
+																	<input type="hidden" name="page" value="views.dashboard">
+																	<input type="hidden" name="question_id" value="{{question['_id']}}">
+																	<button class="btn btn-outline-info darken-3" style="padding: 2px; font-size: 18px;" data-placement="top" data-toggle="popover" data-content="Click to<br>Deactivate" data-html="true" data-trigger="hover"> <i class="icon-toggle-on" ></i></button>
+																</form>
+																{% endif %}
+																
+																<form action="{{url_for('auth.delete')}}" class="d-inline" method="post">
+																	<input type="hidden" name="_id" value="{{question['_id']}}" />
+																	<input type="hidden" name="page" value="views.dashboard" />
+																	<input type="hidden" name="collection" value="questions" />
+
+																	<button class="btn btn-outline-danger" data-placement="top" data-toggle="popover" data-content="Delete" data-html="true" data-trigger="hover" style="padding: 3px; font-size: 15px;"><i class="icon-bin2"></i></button>
+																</form>
+															</td>
+														</tr>
+														{% endfor %}
+													</tbody>
+												</table>
+											</div>
+											{% endif %}
+										</div>
+
+										</div>
+									{% endfor %}
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+	</div>
+</div>	
+<!-- Justified Pills end -->
+
+<!-- <script>
+        window.setInterval(function() {
+        fetch('/api')
+        .then(function(response){
+            return response.json();
+        })
+        .then(function(myJson){
+            document.getElementById('display').innerHTML = myJson['data'];
+        })
+    }, 2000)
+    </script> -->
+{% endblock %}

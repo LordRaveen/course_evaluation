@@ -1,0 +1,389 @@
+{% extends "layout.html" %} {% block title %} Settings {% endblock %}} {% block
+body %} {% include 'includes/_navbar.html' %} {% include
+'includes/_sidebar.html' %} {% include 'includes/_messages.html' %}
+
+<div class="app-content content container-fluid">
+	<div class="content-wrapper">
+		<div class="content-header row">
+			<div class="content-header-left col-md-6 col-xs-12 mb-1 row">
+				<h2 class="content-header-title d-inline ml-1 ">Manage Students</h2>
+        <button class="btn btn-success btn-sm mb-1" data-toggle="modal" data-target="#iconModal">
+          <i class="icon-plus"></i> Add Students
+        </button>
+			</div>
+		</div>
+		<div class="content-body">
+			<!-- Basic form layout section start -->
+			<section id="basic-form-layouts">
+				<div class="row">
+					<div class="col-md-12">
+						<div class="card">
+							<div class="card-header">
+								<h4 class="card-title" id="basic-layout-colored-form-control">
+									All Students 
+								</h4>
+								<a class="heading-elements-toggle"
+									><i class="icon-ellipsis font-medium-3"></i
+								></a>
+								<div class="heading-elements">
+									<ul class="list-inline mb-0">
+                    <li>
+											<a data-action="collapse"><i class="icon-minus4"></i></a>
+										</li>
+										<li>
+											<a data-action="expand"><i class="icon-expand2"></i></a>
+										</li>
+									</ul>
+								</div>
+
+								<div class="card-body collapse in">
+									<div class="card-block">
+
+                    <!-- TABS -->
+										<ul class="nav nav-pills">
+											{% for level in levels %} {% if level['level'] == '100' %}
+											{% set active = 'active' %} {% endif %} {% set class = level['level'] %}
+											<li class="nav-item">
+												<a
+													class="nav-link {{active}}"
+													id="base-pill{{level['level']}}"
+													data-toggle="pill"
+													href="#pill{{level['level']}}"
+													aria-expanded="true"
+													>{{level['class']}} &nbsp; ( {{studs[class]|length}} )
+												</a>
+											</li>
+											{% endfor %}
+										</ul>
+
+                    <!-- CONTENT -->
+                    <div class="tab-content px-1 pt-1">
+                      {% for level in levels %}
+                      {% set class = level['level'] %}
+
+                        {% if class == '100' %}
+                          <div role="tabpanel" class="tab-pane active" id="pill{{level['level']}}" aria-expanded="true" >
+                        {% else %}
+                          <div  class="tab-pane" id="pill{{level['level']}}" aria-expanded="true">
+                        {% endif %}
+
+                      
+                      
+
+                      
+
+                      {% if studs[class]|length > 0 %}
+                        <div class="table-responsive .table-bordered mb-3 ">
+                          <table class="table table-hover mb-0">
+                            <thead>
+                              <tr>
+                                <th>S/N</th>
+                                <th>Name</th>
+                                <th>RegNo.</th>
+                                <th>Gender</th>
+                                <th>Phone</th>
+                                <th>Actions</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              
+                              
+                              {% for student in studs[class] %}
+                              
+                              
+                              <tr>
+                                <td class="text-truncate">{{loop.index}}</td>
+
+                                <td class="text-truncate">
+                                  <span>
+                                    {{student['firstname'].title()}} {{student['lastname'].title()}}
+                                  </span>
+                                </td>
+                                <td>
+                                  <span>{{student['regnumber']}} </span>
+                                </td>
+                                <td>
+                                  <span>{{student['gender'].title()}} </span>
+                                </td>
+                                <td>
+                                  <span><a href="">{{student['phone']}}</a></span>
+                                </td>
+
+                                <td class="text-truncate">
+																<button class="btn btn-info btn-sm" style="padding: 2px; font-size: 14px;" data-toggle="modal" data-target="#editModal{{student['regnumber']}}">
+																	<i class="icon-edit"></i>
+																</button>
+																</a>
+                                  <form action="/delete" method="post" class="form-inline d-inline col-6">
+                                    <input type="hidden" value="{{student['_id']}}" name="_id" />
+                                    <input type="hidden" value="views.manage_students" name="page" />
+                                    <input
+                                      type="hidden"
+                                      value="students"
+                                      name="collection"
+                                    />
+                                    
+                                    <button
+                                      type="submit"
+                                      class="btn btn-danger"
+                                      style="padding: 2px"
+                                    >
+                                      <i class="icon-bin2"></i>
+                                    </button>
+                                  </form>
+                                </td>
+                              </tr>
+
+															<!-- edit modal -->
+															{% include 'includes/edit_student_modal.html' %}
+                              {% endfor %}
+                            </tbody>
+                          </table>
+                        </div>
+                      {% else %}
+                        <p align="center" class="mt-1 jumbotron">No student has been added yet!</p>
+                      {% endif %} <!-- if courses|length > 0 -->
+
+                      </div>
+                      {% endfor %}
+                      
+                    </div>
+
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+		</div>
+	</div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade text-xs-left" id="iconModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <h4 class="modal-title" id="myModalLabel2"> Enter details to add student</hh4>
+    </div>
+    <div class="modal-body">
+      
+      <form
+									class="form-horizontal form-simple"
+									method="post"
+									action="/add_student"
+								>
+									<div style="margin-top: 0px">
+									</div>
+
+									<div class="row">
+										<!-- firstname -->
+										<fieldset
+											class="form-group position-relative has-icon-left mb-1 col-md-4"
+										>
+											<input
+												type="text"
+												class="form-control input-md"
+												name="firstname"
+												autocomplete="off"
+												autofocus
+												placeholder="First Name"
+												value="{{request.form.firstname}}"
+												required
+											/>
+											<div class="form-control-position">
+												<i class="icon-head"></i>
+											</div>
+										</fieldset>
+
+										<!-- lastname -->
+										<fieldset
+											class="form-group position-relative has-icon-left mb-1 col-md-4"
+										>
+											<input
+												type="text"
+												class="form-control input-md"
+												name="lastname"
+												autocomplete="off"
+												placeholder="Last Name"
+												value="{{request.form.lastname}}"
+												required
+											/>
+											<div class="form-control-position">
+												<i class="icon-user"></i>
+											</div>
+										</fieldset>
+
+										<!-- reg number -->
+										<fieldset
+											class="form-group position-relative has-icon-left mb-1 col-md-4"
+										>
+											<input
+												type="text"
+												class="form-control input-md"
+												name="regnumber"
+												autocomplete="off"
+												autofocus
+												placeholder="Registration Number"
+												value="{{request.form.regnumber}}"
+												required
+											/>
+											<div class="form-control-position">
+												<i class="icon-ios-barcode"></i>
+											</div>
+										</fieldset>
+									</div>
+
+									<div class="row">
+										<!-- level -->
+										<fieldset
+											class="form-group position-relative has-icon-left mb-1 col-md-4"
+										>
+											<select
+												id="projectinput6"
+												required
+												name="level"
+												class="form-control"
+											>
+												<option selected="" disabled="">Class</option>
+												{% for i in levels %} 
+												<option value="{{i['level']}}">{{ i['level'].title() }}  - {{ i['class'].title() }}</option>
+												{% endfor %}
+											</select>
+											<div class="form-control-position">
+												<i class="icon-building"></i>
+											</div>
+										</fieldset>
+
+										<!-- phone -->
+										<fieldset
+											class="form-group position-relative has-icon-left mb-1 col-md-4"
+										>
+											<input
+												type="text"
+												class="form-control input-md"
+												name="phone"
+												autocomplete="off"
+												placeholder="Phone Number"
+												value="{{request.form.phone}}"
+												required
+											/>
+											<div class="form-control-position">
+												<i class="icon-phone"></i>
+											</div>
+										</fieldset>
+
+										<!-- email -->
+										<fieldset
+											class="form-group position-relative has-icon-left mb-1 col-md-4"
+										>
+											<input
+												type="email"
+												class="form-control input-md"
+												name="email"
+												autocomplete="off"
+												auto
+												placeholder="Email"
+												value="{{request.form.email}}"
+												required
+											/>
+											<div class="form-control-position">
+												<i class="icon-email"></i>
+											</div>
+										</fieldset>
+									</div>
+
+									<div class="row">
+										<!-- gender -->
+										<fieldset
+											class="form-group position-relative has-icon-left mb-1 col-md-4"
+										>
+											<select
+												id="projectinput6"
+												required
+												name="gender"
+												class="form-control"
+											>
+												<option selected="" disabled="">Gender</option>
+												<option value="male">Male</option>
+												<option value="female">Female</option>
+											</select>
+											<div class="form-control-position">
+												<i class="icon-building"></i>
+											</div>
+										</fieldset>
+
+										<!-- password -->
+										<fieldset
+											class="form-group position-relative has-icon-left mb-1 col-md-4"
+										>
+											<input
+												type="password"
+												class="form-control input-md"
+												name="password"
+												autocomplete="off"
+												placeholder="Enter Password"
+												required
+											/>
+											<div class="form-control-position">
+												<i class="icon-key3"></i>
+											</div>
+										</fieldset>
+
+										<!-- confirm password -->
+										<fieldset
+											class="form-group position-relative has-icon-left mt-0 col-md-4"
+										>
+											<input
+												type="password"
+												class="form-control input-md"
+												name="cpassword"
+												autocomplete="off"
+												placeholder="Confirm Password"
+												required
+											/>
+											<div class="form-control-position">
+												<i class="icon-key3"></i>
+											</div>
+										</fieldset>
+									</div>
+
+									<div class="row">
+										<!-- pic -->
+										<fieldset
+											class="form-group position-relative has-icon-left mb-1 col-md-12"
+										>
+											<input
+												type="file"
+												class="form-control input-md"
+												name="pic"
+												autocomplete="off"
+												placeholder="Picture"
+												required
+											/>
+											<div class="form-control-position">
+												<i class="icon-image"></i>
+											</div>
+										</fieldset>
+									</div>
+
+									<button
+										type="submit"
+										class="btn btn-primary btn-lg btn-block"
+									>
+										<i class="icon-user-plus"></i> Sign up
+									</button>
+								</form>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn grey btn-outline-secondary" data-dismiss="modal">Close</button>
+    </div>
+  </div>
+  </div>
+</div>
+
+{% endblock %}

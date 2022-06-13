@@ -1,0 +1,124 @@
+<!-- Modal -->
+<div class="modal fade text-xs-left" id="editModal{{course['level']}}{{course['code']}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <h4 class="modal-title" id="myModalLabel2"> Enter details to add student</hh4>
+    </div>
+    <div class="modal-body">
+      
+      <form class="form" method="post" action="{{ url_for('auth.update_course') }}">
+        <div class="form-body">
+
+          <input type="hidden" name="_id" value="{{ course['_id'] }}">
+
+          <div class="form-group">
+            <input
+              type="text"
+              required
+              class="form-control"
+              value="{{course['course']}}"
+              placeholder="Course Name"
+              name="course"
+            />
+          </div>
+
+
+          <div class="form-group">
+            <input
+              type="text"
+              required
+              class="form-control"
+              value="{{course['code']}}"
+              placeholder="Course Code"
+              name="code"
+            />
+          </div>
+
+          <div class="form-group">
+            <input
+              type="text"
+              required
+              class="form-control"
+              value="{{course['credit_unit']}}"
+              placeholder="Credit Unit"
+              name="credit_unit"
+            />
+          </div>
+
+          <div class="form-group">
+            <select
+              id="projectinput6"
+              required
+              name="level"
+              class="form-control"
+            >
+              <option disabled="">Level</option>
+              {% for i in levels %} 
+                {% set l = i['level'].lower() %}
+                  {% if i['level'] == course['level'] %}
+                    <option selected="selected" value="{{l}}"> {{i['level'].title()}} </option>
+                  {% else %}
+                    <option value="{{l}}"> {{i['level'].title()}} </option>
+                  {% endif %}
+                {% endfor %}
+            </select>
+          </div>
+
+          <div class="form-group">
+            <select
+              required
+              name="semester"
+              class="form-control"
+            >
+              <option disabled="">Semester</option>
+              {% for i in semesters %} 
+              {% set s = i['semester'].lower() %}
+                {% if s == course['semester'] %}
+                  <option selected value="{{s}}"> {{i['semester'].title()}} </option>
+                {% else %}
+                  <option value="{{s}}"> {{i['semester'].title()}} </option>
+                {% endif %}
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="form-group">
+            <select
+              required
+              name="lecturer"
+              class="form-control"
+            >
+              <option selected disabled="">Lecturer</option>
+              {% for i in lecturers %} 
+              {% set name = i['firstname'] + " " + i['lastname'] %}
+                {% if i['_id'] == ObjectId(course['lecturer']) %}
+                  <option selected="selected" value="{{i['_id']}}"> {{ name }} &nbsp; 🔹 &nbsp; {{i['position'].title()}} </option>
+                {% else %}
+                  <option value="{{i['_id']}}"> {{ name }} &nbsp; 🔹 &nbsp; {{i['position'].title()}} </option>
+                {% endif %}
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="form-group">
+            <button
+              type="submit"
+              class="btn btn-primary btn-lg btn-block"
+            >
+              <i class="icon-save"></i> Update
+            </button>
+          </div>
+        </div>
+      </form>
+
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn grey btn-outline-secondary" data-dismiss="modal">Close</button>
+    </div>
+  </div>
+  </div>
+</div>
