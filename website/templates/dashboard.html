@@ -39,9 +39,8 @@ body%} {% include 'includes/_navbar.html' %} {% include
 											<h3 class="{{base_color[loop.index - 1]}} darken-2">
 												{{course['course']}}
 											</h3>
-											<span class="grey darken-4">
-												
-
+											<span class="grey darken-1">
+												Approx. {{ evaluation_duration(course['course'])}}
 											</span>
 										</div>
 									</div>

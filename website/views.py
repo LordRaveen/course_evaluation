@@ -20,6 +20,24 @@ def index():
     return render_template('index.html')
 
 
+def evaluation_duration(course):
+    """calculates & returns the appropriate time to be spent in evaluating"""
+    _questions = [question for question in questions.find({"course": course})]
+    duration = len(_questions) * 15
+    time = f"{duration} secs"
+
+    if duration > 60:
+        mins = int(duration / 60)
+        mins_text = f"{mins} min" if mins == 1 else f"{mins} mins"
+        secs = duration - (60 * mins)
+        secs_text = "" if secs == 0 else f"{secs} secs"
+
+        time = f"{mins_text} {secs_text} "
+
+    return time
+
+  
+
 @views.route('/dashboard')
 @is_logged_in
 def dashboard():
@@ -36,8 +54,10 @@ def dashboard():
         courses_evaluated = [course for course in courses_query if course['course'] in account['courses_evaluated']]
 
         
-        
-        return render_template('dashboard.html', account=account, courses_offered=courses_offered, courses_evaluated=courses_evaluated)
+        return render_template('dashboard.html', account=account,
+                                courses_offered=courses_offered,
+                                courses_evaluated=courses_evaluated,
+                                evaluation_duration=evaluation_duration)
     
     elif session['usertype'] == 'lecturer':
         account = lecturers.find_one({"username": session['username']})
@@ -159,4 +179,62 @@ def evaluate(id):
     return render_template('evaluate.html', id=id, question_list=question_list, course=course,
                             course_lecturer=course_lecturer)
  
+
+@views.route('evaluation_result')
+@is_admin
+def evaluation_result():
+    
+    return render_template('admin/evaluation_result.html')
+
+
+@views.route('/evaluation_stats', methods=['GET'])
+@is_admin
+def evaluation_stats():
+
+    level_list = [ level for level in levels.find() ]
+    data = {}
+
+    for level in level_list:
+
+        course_list = [ course for course in courses.find({"level": level['level']}) ]
+        title = f"{level['class']} stats - BarChart"
+        data100, data75, data50, data25, _course = [], [], [], [], []
+        # def calc_per(total)
+
+        calc_per = lambda total, single: float(f"{single / total * 100:.2f}")
+
+
+        for course in course_list:
+
+            x = course['scores']
+            num100, num75, num50, num25 = x['100'] + 1, x['75'] + 1, x['50'] + 1, x['25'] + 1
+
+            # accuired_score = sum([num100 * 100, num75 , num50, num25])
+            # division error
+
+            expected_score = sum([num100, num75, num50, num25])
+            print(expected_score)
+
+            data100.append( calc_per(expected_score, num100) )
+            data75.append( calc_per(expected_score, num75) )
+            data50.append( calc_per(expected_score, num50) )
+            data25.append( calc_per(expected_score, num25) )
+            _course.append(course['course'])
+
+        data[f"level{level['level']}"] = {
+                                "title": title,
+                                "courses": _course,
+                                "data100": data100, 
+                                "data75": data75, 
+                                "data50": data50, 
+                                "data25": data25, 
+                                }
+
+    print(data, course_list)
+    
+    return jsonify(data)
+
+
+
+
     

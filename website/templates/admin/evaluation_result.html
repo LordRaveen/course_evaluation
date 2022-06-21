@@ -1,0 +1,155 @@
+{% extends "layout.html" %} {% block title %} Settings {% endblock %}} {% block
+body %} {% include 'includes/_navbar.html' %} {% include
+'includes/_sidebar.html' %}
+<div class="app-content content container-fluid">
+	<div class="content-wrapper">
+		<div class="content-header row"></div>
+
+		<div class="content-body">
+
+			<div class="row">
+				<div class="col-xs-12">
+					<div class="card">
+						<div class="card-header">
+							<h4 class="card-title">Column Stacked Chart</h4>
+							<a class="heading-elements-toggle"
+								><i class="icon-ellipsis font-medium-3"></i
+							></a>
+							<div class="heading-elements">
+								<ul class="list-inline mb-0">
+									<li>
+										<a data-action="collapse"><i class="icon-minus4"></i></a>
+									</li>
+									<li>
+										<a data-action="reload"><i class="icon-reload"></i></a>
+									</li>
+									<li>
+										<a data-action="expand"><i class="icon-expand2"></i></a>
+									</li>
+									<li>
+										<a data-action="close"><i class="icon-cross2"></i></a>
+									</li>
+								</ul>
+							</div>
+						</div>
+						<div class="card-body collapse in">
+							<div class="card-block">
+								<canvas id="column-stacked" height="400"></canvas>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script
+	src="../../static/js/jquery-2.1.4.min.js"
+	type="text/javascript"
+></script>
+
+<script>
+
+	$(window).on("load", function () {
+		$.ajax({
+			url: "/evaluation_stats",
+			type: "GET",
+
+			success: function (response) {
+				var ctx = $("#column-stacked");
+
+				// Chart Options
+				var chartOptions = {
+					title: {
+						display: true,
+						text: response.level100.title,
+					},
+					tooltips: {
+						mode: "label",
+					},
+					responsive: true,
+					maintainAspectRatio: false,
+					responsiveAnimationDuration: 500,
+					scales: {
+						xAxes: [
+							{
+								stacked: true,
+								display: true,
+								gridLines: {
+									color: "#f3f3f3",
+									drawTicks: true,
+								},
+								scaleLabel: {
+									display: true,
+								},
+							},
+						],
+						yAxes: [
+							{
+								stacked: true,
+								display: true,
+								gridLines: {
+									color: "#f3f3f3",
+									drawTicks: true,
+								},
+								scaleLabel: {
+									display: true,
+								},
+							},
+						],
+					},
+				};
+
+				// Chart Data
+				var chartData = {
+					labels: response.level400.courses,
+					datasets: [
+						{
+							label: "😃",
+							data: response.level400.data25,
+							backgroundColor: "#009688",
+							hoverBackgroundColor: "rgba(82,43,218,.8)",
+							borderColor: "transparent",
+						},
+						{
+							label: "🙂",
+							data: response.level400.data50,
+							backgroundColor: "#00BFA5",
+							hoverBackgroundColor: "rgba(0,191,165,.8)",
+							borderColor: "transparent",
+						},
+						{
+							label: "😐",
+							data: response.level400.data75,
+							backgroundColor: "#1DE9B6",
+							hoverBackgroundColor: "rgba(29,233,182,.8)",
+							borderColor: "transparent",
+						},
+            {
+							label: "☹️",
+							data: response.level400.data100,
+							backgroundColor: "#64FFDA",
+							hoverBackgroundColor: "rgba(100,255,218,.8)",
+							borderColor: "transparent",
+						}
+					],
+				};
+
+				var config = {
+					type: "bar",
+
+					// Chart Options
+					options: chartOptions,
+
+					data: chartData,
+				};
+
+				// Create the chart
+				var lineChart = new Chart(ctx, config);
+			},
+		});
+	});
+</script>
+
+{% endblock %}
