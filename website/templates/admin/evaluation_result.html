@@ -63,7 +63,7 @@ body %} {% include 'includes/_navbar.html' %} {% include
 				var chartOptions = {
 					title: {
 						display: true,
-						text: response.level100.title,
+						text: response.level400.title,
 					},
 					tooltips: {
 						mode: "label",
@@ -106,28 +106,28 @@ body %} {% include 'includes/_navbar.html' %} {% include
 					labels: response.level400.courses,
 					datasets: [
 						{
-							label: "😃",
-							data: response.level400.data25,
+							label: "Poor",
+							data: JSON.parse('{{ [16,9]|tojson }}'),
 							backgroundColor: "#009688",
-							hoverBackgroundColor: "rgba(82,43,218,.8)",
+							hoverBackgroundColor: "rgba(12, 128, 118, 0.8)",
 							borderColor: "transparent",
 						},
 						{
-							label: "🙂",
+							label: "Good",
 							data: response.level400.data50,
 							backgroundColor: "#00BFA5",
 							hoverBackgroundColor: "rgba(0,191,165,.8)",
 							borderColor: "transparent",
 						},
 						{
-							label: "😐",
+							label: "V. Good",
 							data: response.level400.data75,
 							backgroundColor: "#1DE9B6",
 							hoverBackgroundColor: "rgba(29,233,182,.8)",
 							borderColor: "transparent",
 						},
             {
-							label: "☹️",
+							label: "Perfect",
 							data: response.level400.data100,
 							backgroundColor: "#64FFDA",
 							hoverBackgroundColor: "rgba(100,255,218,.8)",
