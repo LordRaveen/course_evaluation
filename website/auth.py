@@ -15,7 +15,7 @@ date_now = dt.strftime('%A-%d-%b-%Y  %I:%M %p')
 auth = Blueprint('auth', __name__)
 
 
-# is_logged_in Decorator
+# Permission Decorator
 def is_logged_in(f):
     @wraps(f)
     def wrap(*args, **kwargs): 
@@ -34,7 +34,7 @@ def is_admin(f):
             if session['usertype'] == 'admin':
                 return f(*args, **kwargs)
 
-            flash('Unauthorized Access! 😡', 'danger')
+            flash('Unauthorized Access! ❌', 'danger')
             return redirect(url_for('views.dashboard'))
         else: 
             flash('Unauthorized Access!', 'danger')
@@ -111,6 +111,7 @@ def login():
         else: 
             flash('Account does not exists. Please Login', 'danger')
             return render_template('login.html')
+
     return render_template('login.html')
 
 
@@ -335,7 +336,6 @@ def update_password():
     return redirect(url_for('views.profile'))
             
 
-
 @auth.route('/add_setting', methods=['POST'])
 @is_admin
 def add_setting():
@@ -494,10 +494,12 @@ def update_course():
                 {"$set": {"semester": semester}},
                 {"$set": {"lecturer": lecturer}},
                 {"$set": {"date_last_updated": date_now}}]
-        )
+            )
             flash('Course Record Updated!', 'success')
             return redirect(url_for('views.manage_courses'))
+
         except:
+
             flash('An error occured! Please try again.', 'danger')
             return redirect(url_for('views.manage_courses'))
 
@@ -609,21 +611,25 @@ def evaluation_sum():
         for score in feedback:
             evaluated_course = courses.find_one({'course': course})
 
-            if int(score[1]) == 100:
-                courses.update_one({"course": course},
-                                   {'$set': {f"scores.{score[1]}": evaluated_course['scores'][f'{score[1]}'] + 1} })
+            possible_score = [100, 75, 50, 25]
+
+
+            for i in possible_score:
+                if int(score[1]) == i:
+                    courses.update_one({"course": course},
+                                    {'$set': {f"scores.{score[1]}": evaluated_course['scores'][f'{score[1]}'] + 1} })
             
-            if int(score[1]) == 75:
-                courses.update_one({"course": course},
-                                   {'$set': {f"scores.{score[1]}": evaluated_course['scores'][f'{score[1]}'] + 1} })
+            # if int(score[1]) == 75:
+            #     courses.update_one({"course": course},
+            #                        {'$set': {f"scores.{score[1]}": evaluated_course['scores'][f'{score[1]}'] + 1} })
             
-            if int(score[1]) == 50:
-                courses.update_one({"course": course},
-                                   {'$set': {f"scores.{score[1]}": evaluated_course['scores'][f'{score[1]}'] + 1} })
+            # if int(score[1]) == 50:
+            #     courses.update_one({"course": course},
+            #                        {'$set': {f"scores.{score[1]}": evaluated_course['scores'][f'{score[1]}'] + 1} })
             
-            if int(score[1]) == 25:
-                courses.update_one({"course": course},
-                                   {'$set': {f"scores.{score[1]}": evaluated_course['scores'][f'{score[1]}'] + 1} })
+            # if int(score[1]) == 25:
+                # courses.update_one({"course": course},
+                #                    {'$set': {f"scores.{score[1]}": evaluated_course['scores'][f'{score[1]}'] + 1} })
         
         # calculate total in percentage score after each evaluation
         # add up the scores
@@ -658,6 +664,9 @@ def evaluation_sum():
         flash('Evaluation Successful!', 'success')
     return redirect(url_for('views.dashboard'))
 
+
+
+#####################
 @auth.route('/test')
 def test():
     return render_template('test.html')

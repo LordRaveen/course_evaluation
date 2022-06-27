@@ -2,6 +2,7 @@ from pymongo import MongoClient
 
 # Initializing Database
 # Creating a pymongo client
+
 client = MongoClient('localhost', 27017)
 
 # Getting the database instance
@@ -21,3 +22,4 @@ states = db['states']
 courses = db['courses']
 
 questions = db['questions']
+announcements = db['announcements']
